@@ -34,6 +34,9 @@ app.use(express.urlencoded({ extended: true }));
 // ─── Logging ─────────────────────────────────────────────────────
 setupLogger(app);
 
+// ─── Root Redirect ───────────────────────────────────────────────
+app.get('/', (req, res) => res.redirect('/api'));
+
 // ─── Health Check ────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.status(200).json({
