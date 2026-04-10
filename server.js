@@ -44,6 +44,49 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// ─── API Welcome Route ───────────────────────────────────────────
+app.get('/api', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: '🛍️ Welcome to Myntra E-commerce API',
+    version: '1.0.0',
+    endpoints: {
+      health: 'GET /api/health',
+      auth: {
+        register: 'POST /api/auth/register',
+        login: 'POST /api/auth/login',
+        profile: 'GET /api/auth/me',
+      },
+      products: {
+        list: 'GET /api/products',
+        search: 'GET /api/products/search?q=',
+        detail: 'GET /api/products/:id',
+        create: 'POST /api/products (Admin)',
+        update: 'PUT /api/products/:id (Admin)',
+        delete: 'DELETE /api/products/:id (Admin)',
+      },
+      cart: {
+        get: 'GET /api/cart',
+        add: 'POST /api/cart',
+        update: 'PUT /api/cart/:itemId',
+        remove: 'DELETE /api/cart/:itemId',
+        clear: 'DELETE /api/cart',
+      },
+      orders: {
+        place: 'POST /api/orders',
+        myOrders: 'GET /api/orders',
+        detail: 'GET /api/orders/:id',
+        all: 'GET /api/orders/all (Admin)',
+        updateStatus: 'PUT /api/orders/:id/status (Admin)',
+      },
+      payment: {
+        process: 'POST /api/payment/process',
+      },
+    },
+  });
+});
+
+
 // ─── Mount Routes ────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
