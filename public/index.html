@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Myntra E-commerce API</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f;
+      color: #e4e4e7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated gradient background */
+    .bg-gradient {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      background: 
+        radial-gradient(ellipse at 20% 50%, rgba(255, 68, 132, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(120, 80, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 80%, rgba(255, 168, 38, 0.06) 0%, transparent 50%);
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 60px 0 40px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .logo-icon {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #ff4484, #7850ff);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 8px 32px rgba(255, 68, 132, 0.3);
+    }
+
+    .logo-text {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff4484, #7850ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, #ff4484 0%, #7850ff 50%, #ffa826 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: #a1a1aa;
+      max-width: 600px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+
+    .badge-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .badge {
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .badge-green { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
+    .badge-blue { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
+    .badge-purple { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.2); }
+    .badge-orange { background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.2); }
+    .badge-pink { background: rgba(236, 72, 153, 0.15); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.2); }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 68, 132, 0.3);
+    }
+
+    .stat-number {
+      font-size: 36px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff4484, #7850ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: #71717a;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* Section Title */
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title .icon { font-size: 24px; }
+
+    /* Endpoint Groups */
+    .endpoint-group {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .endpoint-group:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .group-header {
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .group-header h3 {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .group-count {
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 4px 10px;
+      border-radius: 100px;
+      color: #a1a1aa;
+    }
+
+    .group-body {
+      padding: 0 24px 18px;
+    }
+
+    .endpoint {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 14px;
+    }
+
+    .method {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      min-width: 60px;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+
+    .method-get { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+    .method-post { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .method-put { background: rgba(249, 115, 22, 0.15); color: #fb923c; }
+    .method-delete { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+    .endpoint-path {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: #d4d4d8;
+      font-size: 13px;
+    }
+
+    .endpoint-desc {
+      color: #71717a;
+      font-size: 13px;
+      margin-left: auto;
+    }
+
+    .endpoint-auth {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 100px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .auth-admin { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
+    .auth-user { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
+    .auth-public { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
+
+    /* Tech Stack */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+
+    .tech-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .tech-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(120, 80, 255, 0.3);
+    }
+
+    .tech-card .emoji { font-size: 28px; display: block; margin-bottom: 8px; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 40px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      color: #52525b;
+      font-size: 14px;
+    }
+
+    .footer a {
+      color: #ff4484;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .try-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #ff4484, #7850ff);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(255, 68, 132, 0.3);
+    }
+
+    .try-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(255, 68, 132, 0.4);
+    }
+
+    .live-dot {
+      width: 8px; height: 8px;
+      background: #4ade80;
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 32px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .endpoint-desc { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+      .tech-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-gradient"></div>
+  <div class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="logo">
+        <div class="logo-icon">🛍️</div>
+        <div class="logo-text">Myntra API</div>
+      </div>
+      <h1>Production-Ready<br><span>E-commerce Backend</span></h1>
+      <p>A robust RESTful API built with Node.js, Express.js, MongoDB & Redis — featuring JWT auth, product search, cart, orders, and payment simulation.</p>
+      <div class="badge-row">
+        <span class="badge badge-green"><span class="live-dot"></span>&nbsp; Live</span>
+        <span class="badge badge-blue">REST API</span>
+        <span class="badge badge-purple">JWT Auth</span>
+        <span class="badge badge-orange">Redis Cache</span>
+        <span class="badge badge-pink">Rate Limited</span>
+      </div>
+      <a href="/api/health" class="try-btn">⚡ Try Health Check</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-number">25+</div>
+        <div class="stat-label">API Endpoints</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">5</div>
+        <div class="stat-label">Resource Models</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">6</div>
+        <div class="stat-label">Middleware Layers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">RESTful Design</div>
+      </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <h2 class="section-title"><span class="icon">🛠️</span> Tech Stack</h2>
+    <div class="tech-grid">
+      <div class="tech-card"><span class="emoji">🟢</span>Node.js</div>
+      <div class="tech-card"><span class="emoji">⚡</span>Express.js</div>
+      <div class="tech-card"><span class="emoji">🍃</span>MongoDB</div>
+      <div class="tech-card"><span class="emoji">🔴</span>Redis</div>
+      <div class="tech-card"><span class="emoji">🔐</span>JWT</div>
+      <div class="tech-card"><span class="emoji">🛡️</span>Helmet</div>
+      <div class="tech-card"><span class="emoji">✅</span>Validator</div>
+      <div class="tech-card"><span class="emoji">📝</span>Morgan</div>
+    </div>
+
+    <!-- API Endpoints -->
+    <h2 class="section-title"><span class="icon">📡</span> API Endpoints</h2>
+
+    <!-- Auth -->
+    <div class="endpoint-group">
+      <div class="group-header" onclick="this.parentElement.classList.toggle('open')">
+        <h3>🔐 Authentication</h3>
+        <span class="group-count">3 endpoints</span>
+      </div>
+      <div class="group-body">
+        <div class="endpoint">
+          <span class="method method-post">POST</span>
+          <span class="endpoint-path">/api/auth/register</span>
+          <span class="endpoint-desc">Register new user</span>
+          <span class="endpoint-auth auth-public">Public</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-post">POST</span>
+          <span class="endpoint-path">/api/auth/login</span>
+          <span class="endpoint-desc">Login & get JWT</span>
+          <span class="endpoint-auth auth-public">Public</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-get">GET</span>
+          <span class="endpoint-path">/api/auth/me</span>
+          <span class="endpoint-desc">User profile</span>
+          <span class="endpoint-auth auth-user">User</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products -->
+    <div class="endpoint-group">
+      <div class="group-header">
+        <h3>📦 Products</h3>
+        <span class="group-count">6 endpoints</span>
+      </div>
+      <div class="group-body">
+        <div class="endpoint">
+          <span class="method method-get">GET</span>
+          <span class="endpoint-path">/api/products</span>
+          <span class="endpoint-desc">List with pagination & filter</span>
+          <span class="endpoint-auth auth-public">Public</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-get">GET</span>
+          <span class="endpoint-path">/api/products/search?q=</span>
+          <span class="endpoint-desc">Full-text search</span>
+          <span class="endpoint-auth auth-public">Public</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-get">GET</span>
+          <span class="endpoint-path">/api/products/:id</span>
+          <span class="endpoint-desc">Product detail</span>
+          <span class="endpoint-auth auth-public">Public</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-post">POST</span>
+          <span class="endpoint-path">/api/products</span>
+          <span class="endpoint-desc">Create product</span>
+          <span class="endpoint-auth auth-admin">Admin</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-put">PUT</span>
+          <span class="endpoint-path">/api/products/:id</span>
+          <span class="endpoint-desc">Update product</span>
+          <span class="endpoint-auth auth-admin">Admin</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-delete">DELETE</span>
+          <span class="endpoint-path">/api/products/:id</span>
+          <span class="endpoint-desc">Delete product</span>
+          <span class="endpoint-auth auth-admin">Admin</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart -->
+    <div class="endpoint-group">
+      <div class="group-header">
+        <h3>🛒 Cart</h3>
+        <span class="group-count">5 endpoints</span>
+      </div>
+      <div class="group-body">
+        <div class="endpoint">
+          <span class="method method-get">GET</span>
+          <span class="endpoint-path">/api/cart</span>
+          <span class="endpoint-desc">View cart</span>
+          <span class="endpoint-auth auth-user">User</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-post">POST</span>
+          <span class="endpoint-path">/api/cart</span>
+          <span class="endpoint-desc">Add item</span>
+          <span class="endpoint-auth auth-user">User</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-put">PUT</span>
+          <span class="endpoint-path">/api/cart/:itemId</span>
+          <span class="endpoint-desc">Update quantity</span>
+          <span class="endpoint-auth auth-user">User</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-delete">DELETE</span>
+          <span class="endpoint-path">/api/cart/:itemId</span>
+          <span class="endpoint-desc">Remove item</span>
+          <span class="endpoint-auth auth-user">User</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-delete">DELETE</span>
+          <span class="endpoint-path">/api/cart</span>
+          <span class="endpoint-desc">Clear cart</span>
+          <span class="endpoint-auth auth-user">User</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders -->
+    <div class="endpoint-group">
+      <div class="group-header">
+        <h3>📋 Orders</h3>
+        <span class="group-count">5 endpoints</span>
+      </div>
+      <div class="group-body">
+        <div class="endpoint">
+          <span class="method method-post">POST</span>
+          <span class="endpoint-path">/api/orders</span>
+          <span class="endpoint-desc">Place order</span>
+          <span class="endpoint-auth auth-user">User</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-get">GET</span>
+          <span class="endpoint-path">/api/orders</span>
+          <span class="endpoint-desc">My orders</span>
+          <span class="endpoint-auth auth-user">User</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-get">GET</span>
+          <span class="endpoint-path">/api/orders/:id</span>
+          <span class="endpoint-desc">Order detail</span>
+          <span class="endpoint-auth auth-user">User</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-get">GET</span>
+          <span class="endpoint-path">/api/orders/all</span>
+          <span class="endpoint-desc">All orders</span>
+          <span class="endpoint-auth auth-admin">Admin</span>
+        </div>
+        <div class="endpoint">
+          <span class="method method-put">PUT</span>
+          <span class="endpoint-path">/api/orders/:id/status</span>
+          <span class="endpoint-desc">Update status</span>
+          <span class="endpoint-auth auth-admin">Admin</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment -->
+    <div class="endpoint-group">
+      <div class="group-header">
+        <h3>💳 Payment</h3>
+        <span class="group-count">1 endpoint</span>
+      </div>
+      <div class="group-body">
+        <div class="endpoint">
+          <span class="method method-post">POST</span>
+          <span class="endpoint-path">/api/payment/process</span>
+          <span class="endpoint-desc">Process mock payment</span>
+          <span class="endpoint-auth auth-user">User</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Built with ❤️ using Node.js, Express.js & MongoDB</p>
+      <p style="margin-top: 8px;">
+        <a href="https://github.com/jithendra98/myntra-ecommerce-backend" target="_blank">⭐ GitHub Repository</a>
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

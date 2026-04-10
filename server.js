@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 
@@ -23,7 +24,17 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const app = express();
 
 // ─── Security Middleware ─────────────────────────────────────────
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:"],
+      scriptSrc: ["'self'"],
+    },
+  },
+}));
 app.use(cors({ origin: config.corsOrigin }));
 app.use(generalLimiter);
 
@@ -34,8 +45,8 @@ app.use(express.urlencoded({ extended: true }));
 // ─── Logging ─────────────────────────────────────────────────────
 setupLogger(app);
 
-// ─── Root Redirect ───────────────────────────────────────────────
-app.get('/', (req, res) => res.redirect('/api'));
+// ─── Static Files & Landing Page ─────────────────────────────────
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ─── Health Check ────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
